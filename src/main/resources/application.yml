@@ -1,0 +1,33 @@
+#?????
+spring:
+  profiles:
+    active: dev
+
+---
+#????
+spring:
+  config:
+    activate:
+      on-profile: dev
+datasource:
+  driver-class-name: com.mysql.cj.jdbc.Driver
+  url: jdbc:mysql://localhost:3306/dba_pmp?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+  username: root
+  password: rootroot
+
+server:
+  port: 8080
+---
+#????
+spring:
+  config:
+    activate:
+      on-profile: pro
+datasource:
+  driver-class-name: com.mysql.cj.jdbc.Driver
+  url: jdbc:mysql://106.13.18.48:3306/dba_pmp?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+  username: root
+  password: rootroot
+
+server:
+  port: 8081

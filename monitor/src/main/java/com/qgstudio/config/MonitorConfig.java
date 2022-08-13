@@ -26,7 +26,7 @@ public class MonitorConfig {
     /**是否将日志输出到文件，默认为true*/
     @Builder.Default
     private boolean logToFile = true;
-    /**是日志输出的文件路径，默认为../monitorLogs*/
+    /**日志输出的文件路径，默认为../monitorLogs*/
     @Builder.Default
     private String logFilePath = "../monitorLogs";
     /**需要监听的接口，默认为'/**'*/

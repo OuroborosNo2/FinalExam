@@ -172,7 +172,6 @@ public class MonitorInterceptor implements HandlerInterceptor {
         map.put("visitDate",visitDate);
         map.put("responseTime",responseTime);
         String json = JSON.toJSONString(map);
-        System.out.println(json);
 
         if(socketThread == null){
             socketThread = new SocketThread(monitorConfig);

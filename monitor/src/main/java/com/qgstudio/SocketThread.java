@@ -37,7 +37,6 @@ public class SocketThread extends Thread{
         Thread.currentThread().setName("socket线程");
         while (true){
             synchronized (this) {
-                log.warn("快生成文件!");
                 //log.info("准备发送\n"+json);
                 pw.write(json);
                 pw.flush();

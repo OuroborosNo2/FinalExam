@@ -18,6 +18,7 @@
 导包后需要添加拦截器
 ```
 @Configuration
+@ComponentScan({"com.qgstudio.interceptor","com.qgstudio.config"})
 public class SpringMvcSupport extends WebMvcConfigurationSupport {
 
     @Autowired

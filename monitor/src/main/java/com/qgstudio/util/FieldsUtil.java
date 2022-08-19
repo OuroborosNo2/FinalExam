@@ -41,7 +41,10 @@ public class FieldsUtil {
                 if("".equals(name)){
                     name = f.getName();
                 }
-                result.add(name + ":" + f.get(obj).toString());
+                Object value = f.get(obj);
+                if (value!=null){
+                    result.add(name + ":" + value.toString());
+                }
 
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);

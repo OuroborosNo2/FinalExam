@@ -1,6 +1,7 @@
 package com.qgstudio.interceptor;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
 import com.qgstudio.config.MonitorConfig;
 import com.qgstudio.SocketThread;
 import com.qgstudio.annotation.CustomTrait;
@@ -8,7 +9,10 @@ import com.qgstudio.util.FieldsUtil;
 import com.qgstudio.util.NetworkUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -21,10 +25,7 @@ import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @program: monitor
@@ -32,6 +33,7 @@ import java.util.Map;
  * @author: ouroborosno2
  * @create: 2022-08-10
  **/
+@RestControllerAdvice
 @Component
 @Slf4j
 public class MonitorInterceptor implements HandlerInterceptor {
@@ -40,6 +42,8 @@ public class MonitorInterceptor implements HandlerInterceptor {
     private static SocketThread socketThread;
 
     public MonitorInterceptor(){}
+
+    public static ThreadLocal<String> exceptionContainer = new ThreadLocal<>();
 
     /**访问者的ip*/
     private String ip;
@@ -68,6 +72,7 @@ public class MonitorInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.info("进入Monitor拦截");
         //如果是SpringMVC请求
         if(handler instanceof HandlerMethod){
             visitDate = LocalDateTime.now();
@@ -112,6 +117,7 @@ public class MonitorInterceptor implements HandlerInterceptor {
             //输出日志到控制台
             if(monitorConfig.isLogToConsole()) {
                 log.info("---------------{}拦截了请求---------------",visitDate);
+                log.info("projectUrl：{}",monitorConfig.getProjectUrl());
                 log.info("当前拦截的ip为：{}", ip);
                 log.info("当前拦截的方法为：{}", method.getName());
                 log.info("当前拦截的方法参数数量为：{}", inParameters.size());
@@ -153,8 +159,11 @@ public class MonitorInterceptor implements HandlerInterceptor {
                 StringWriter sw = new StringWriter();
                 ex.printStackTrace(new PrintWriter(sw, true));
                 exception = sw.toString();
-                log.info(exception);
+                exception = exception.substring(0,exception.indexOf("at sun.reflect"));
+            }else{
+                exception = exceptionContainer.get();
             }
+            //log.info(exception);
             log.info("----------------此次请求花费的时间：{}ms----------------", responseTime);
         }
 
@@ -185,5 +194,8 @@ public class MonitorInterceptor implements HandlerInterceptor {
                 socketThread.notify();
             }
         }
+
     }
+
+
 }

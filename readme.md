@@ -18,6 +18,7 @@
 导包后需要添加拦截器
 ```
 @Configuration
+@ComponentScan({"com.qgstudio"})
 public class SpringMvcSupport extends WebMvcConfigurationSupport {
 
     @Autowired
@@ -38,9 +39,9 @@ public class SpringMvcSupport extends WebMvcConfigurationSupport {
 spring:
   monitor:
     #监控数据流向的服务器地址,默认为localhost
-    host: 39.98.41.126
+    host: 106.13.18.48
     #监控数据流向的服务器地址端口，默认为8080
-    port: 31101
+    port: 8082
     #是否将日志输出到控制台，默认为true
     log-to-console: false
     #是否将日志输出到文件，默认为true
@@ -49,13 +50,30 @@ spring:
     log-file-path: "../monitorLogs"
     #需要监听的接口，默认为'/**'
     path-patterns: "/**"
-    #本项目的地址/主页，需要作为标识向服务端提供身份
+    #本项目的地址/主页，需要作为标识向服务端提供身份(与官网发布项目时的设置一致)
     project-url: "106.13.18.48"
 ```
 
 
 可选注解
+
+* @CustomTrait(value)  
+自定义特征(字段),一并监控,传输给服务端  
+  1. value为所监控的自定义特征的名称  
+  2. 所注解的字段必须修饰为static，否则报错  
+  3. 在接口方法执行时为其赋值  
+
+例子
 ```
-#自定义特征(字段),一并监控,传输给服务端
-@CustomTrait
+@RestController
+@RequestMapping(value = "/users")
+public class UserController {
+    @CustomTrait("userId")
+    private static int trait;
+    
+    @PostMapping
+    public xxx login(xxx){
+        trait = TokenUtil.getUser().getUser_id();
+    }
+}
 ```

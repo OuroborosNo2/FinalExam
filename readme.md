@@ -6,7 +6,13 @@
      * 存在问题:
           1. 日志输出到文件功能未完成
           2. 监控数据的传输是单线程单socket串行传输,无法处理大批量请求
+
 ### 使用教程
+
+先下载项目中的com.zip文件，解压至maven仓库（默认路径：C:/Users/xxxxx/.m2/repository）
+
+然后在pom.xml中添加依赖
+
 ```
 <dependency>
      <groupId>com.qgstudio</groupId>
